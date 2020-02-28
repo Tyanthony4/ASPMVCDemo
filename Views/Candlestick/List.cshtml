@@ -1,0 +1,42 @@
+﻿<html>
+@model MVCWebApplication.ViewModels.SearchCandlestickRangeInputViewModel 
+<head>
+ @{ 
+     if(Model != null)
+     {
+         <h1>@Model.Symbol was added at time: @DateTime.Now</h1>
+   
+     }
+ }
+</head>
+<body>
+    @using (Html.BeginForm())
+    {
+        <div>
+            <h3>https://localhost:44306/Candlestick/Pattern</h3>
+        </div>
+        <div>
+            <h2>Symbol</h2>
+            <h3>Example input: XVGBTC, DOGEUSDT, LTCBTC, etc...</h3>
+            @Html.TextBox("Symbol", "BTCUSDT")
+        </div>
+        <div>
+            <h2>Limit</h2>
+            <h3># of candles. Example.) 18 will give back 18 candles</h3>
+            @Html.TextBox("Limit", "18")
+        </div>
+        <div>
+            <h2>Interval</h2>
+            <h3>Example input: 5m, 15m, 30m, 1h, 4h, 1d</h3>
+            @Html.TextBox("Interval", "4h")
+        </div>
+        <div>
+            <h2>End Time</h2>
+            @*<input type="datetime-local" id="endTime" value="2019-11-02T00:00" />*@
+            @Html.EditorFor(model => model.EndTime, new { id = "EndTime" })
+        </div>
+
+        <input type="submit" value="Save symbol" />
+    }
+</body>
+</html>

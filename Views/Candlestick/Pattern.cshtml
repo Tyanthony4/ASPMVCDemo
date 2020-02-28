@@ -1,0 +1,132 @@
+﻿<html>
+@model List< MVCWebApplication.ViewModels.PatternViewModel>
+<head>
+
+</head>
+<body>
+    @using (Html.BeginForm())
+    {
+    <div>
+        <h3>https://localhost:44306/Candlestick/List</h3>
+    </div>
+      
+        <div>
+            <h2>Limit</h2>
+            <h3># of candles. Example.) 18 will give back 18 candles</h3>
+            @Html.TextBox("Limit", "18")
+        </div>
+        <div>
+            <h2>Interval</h2>
+            <h3>Example input: 5m, 15m, 30m, 1h, 4h, 1d</h3>
+            @Html.TextBox("Interval", "4h")
+        </div>
+
+        <input type="submit" value="Save symbol" />
+    }
+
+    
+    <div id="renderList">
+        <ul id="tickerList">
+
+            @{
+                if (Model != null)
+                {
+                    for(var i = 0; i <Model.Count; i++)
+                    {
+                        <h3> @Model[i].Symbol</h3>
+                        <div class="=@Model[i].Symbol">
+                            <div id="@Model[i].Symbol">
+
+                                <script type="text/javascript">
+                                    window.onload = function () {
+                                        debugger;
+                                        var json = @Html.Raw(Json.Serialize(@Model));
+
+                                        for (var i = 0; i < json.length; i++) {
+                                            Plot(json[i]);
+                                        }
+                                        
+                                      
+                                     };
+                                   
+                                </script>
+
+
+                            </div>
+
+                        </div>
+                    }
+                }
+
+            }
+
+        </ul>
+    </div>
+
+    <script type="text/javascript">
+        
+        function Plot(pattern) {
+               var trace1 = {
+
+          x: pattern.openTimes,
+
+          close: pattern.closes,
+
+          decreasing: {line: {color: '#FF0000'}},
+
+          high: pattern.highs,
+
+          increasing: {line: {color: '#00FF00'}},
+
+          line: {color: 'rgba(31,119,180,1)'},
+
+          low: pattern.lows,
+
+          open: pattern.opens,
+
+          type: 'candlestick',
+          xaxis: 'x',
+          yaxis: 'y'
+        };
+
+
+        var data = [trace1];
+
+        var layout = {
+          dragmode: 'zoom',
+          margin: {
+            r: 10,
+            t: 25,
+            b: 40,
+            l: 60
+          },
+          showlegend: false,
+          xaxis: {
+            autorange: true,
+            domain: [0, 1],
+            rangeslider: {visible: false},
+            title: 'Date',
+            type: 'date'
+          },
+          yaxis: {
+            autorange: true,
+            domain: [0, 1],
+            type: 'linear'
+          }
+        };
+        var divID = pattern.symbol;
+        Plotly.plot(divID, data, layout);
+
+        var graphDiv = document.getElementById(divID);
+        graphDiv.on('plotly_selected', function (eventData) {
+            //console.log(eventData.points);
+            var range = eventData.range;
+            var percent = (1 - (range.y[0] / range.y[1])) * 100;
+            console.log(percent);
+            alert(percent);
+        });
+    }
+                        </script>
+    
+</body>
+</html>
